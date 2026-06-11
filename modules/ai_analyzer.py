@@ -54,13 +54,17 @@ class NewsAnalyzer:
                 if not summary_text:
                     summary_text = news.get("title", "")
 
+                # 출처 정보 추가
+                source = news.get("source", "출처 불명")
+                summary_with_source = f"{summary_text}\n[출처: {source}]"
+
                 # 품목 분류 (제목과 요약 기반)
                 category = self._categorize_product(news.get("title", "") + " " + news.get("summary", ""))
 
                 summaries.append({
                     "rank": idx,
                     "title": news.get("title", "제목 없음"),
-                    "summary": summary_text,
+                    "summary": summary_with_source,
                     "impact": ["높음", "중간", "낮음"][hash(news.get("title", "")) % 3],
                     "source": news.get("source", "출처 불명"),
                     "published": news.get("published", "시간 불명"),

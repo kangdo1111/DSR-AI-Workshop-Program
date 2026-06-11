@@ -503,6 +503,12 @@ relevant_news = self.filter_by_relevance(dedup_news)
 - 개선안: ai_analyzer.py에 출처 추출 로직 추가
 - 영향도: 높음 (신뢰성 향상)
 
+**[Issue-Runner 현황 댓글]**
+- 분석: ai_analyzer.py의 summaries에 출처 정보 미포함
+- 원인: summary_text 생성 시 출처를 별도로 추가하지 않음
+- 전략: 요약 끝에 `[출처: {source}]` 형식으로 추가
+- 상태: 🔧 수정 중
+
 #### Issue #6: 링크 유효성 검증
 **피드백**: 🟠 중간 - 기능성
 - 현황: RSS 피드 링크는 유효함 ✅
