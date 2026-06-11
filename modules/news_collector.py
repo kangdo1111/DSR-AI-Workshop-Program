@@ -266,7 +266,10 @@ class NewsCollector:
         Returns:
             필터링된 뉴스 목록
         """
-        cutoff_date = datetime.now() - timedelta(days=days)
+        from datetime import timezone
+
+        # UTC 기준 현재 시간 (aware datetime)
+        cutoff_date = datetime.now(timezone.utc) - timedelta(days=days)
         filtered_news = []
 
         for article in news_list:
@@ -274,6 +277,11 @@ class NewsCollector:
                 # RFC 2822 형식의 날짜를 파싱
                 if article.get("published"):
                     pub_date = parsedate_to_datetime(article["published"])
+
+                    # naive datetime을 aware datetime으로 변환
+                    if pub_date.tzinfo is None:
+                        pub_date = pub_date.replace(tzinfo=timezone.utc)
+
                     if pub_date > cutoff_date:
                         filtered_news.append(article)
                     else:

@@ -462,3 +462,83 @@ relevant_news = self.filter_by_relevance(dedup_news)
 
 **마지막 업데이트**: 2026-06-11 16:45  
 **검증자**: Claude Code AI Assistant
+
+---
+
+# 🔍 이슈별 상세 피드백 및 개선 계획
+
+## Issue-Writer 검증 결과
+
+### ✅ 완료 이슈 (1-4)
+
+#### Issue #1: RSS 피드 자동 수집 구현
+**피드백**: ✅ 완벽하게 구현됨
+- Google News RSS 2개 URL 추가 ✅
+- collect_news() main.py 연동 ✅  
+- 실제 뉴스 수집 검증됨 (8개 성공) ✅
+
+#### Issue #2: 날짜 필터 추가
+**피드백**: ⚠️ 경고 - 타임존 오류 발견
+- filter_by_date() 메서드 구현 ✅
+- 하지만: `offset-naive vs offset-aware datetime` 오류 발생
+- **개선 필요**: parsedate_to_datetime()의 타임존 처리 개선
+
+#### Issue #3: 중복 기사 제거
+**피드백**: ✅ 완벽하게 구현됨
+- SequenceMatcher 기반 유사도 계산 ✅
+- 80% 기준 적용 ✅
+- remove_duplicates() 작동 확인 ✅
+
+#### Issue #4: 스프링 관련성 필터
+**피드백**: ✅ 완벽하게 구현됨
+- filter_by_relevance() 메서드 구현 ✅
+- 스프링 키워드 정의 (코일, suspension 등) ✅
+- 제외 키워드 적절함 ✅
+
+### ⏳ 예정 이슈 (5-8) - 우선순위 재정렬
+
+#### Issue #5: 수치 정보 출처 표기
+**피드백**: 🔴 높음 - 신뢰성 직결
+- 현황: 요약문에 [출처] 명시 없음
+- 개선안: ai_analyzer.py에 출처 추출 로직 추가
+- 영향도: 높음 (신뢰성 향상)
+
+#### Issue #6: 링크 유효성 검증
+**피드백**: 🟠 중간 - 기능성
+- 현황: RSS 피드 링크는 유효함 ✅
+- 문제: 이전 테스트 데이터 링크 (example.com) 제거됨
+- 개선안: URL 검증 메서드 추가 (선택사항)
+
+#### Issue #7: 리포트 범위 명시
+**피드백**: 🟡 낮음 - UI/UX
+- 현황: "2026년 6월 11일"로 표시
+- 제안: "금주 종합 (2026.06.07~06.13)" 형식 추가
+- 영향도: 낮음 (사용성)
+
+#### Issue #8: 영향도 평가 기준 명확화
+**피드백**: 🟠 중간 - 분석 정확도
+- 현황: 이슈 우선순위 기준 미명확
+- 개선안: 뉴스 빈도 기반 평가 추가
+- 영향도: 중간
+
+---
+
+## 🔧 필요한 코드 개선사항
+
+### 우선순위 1 (긴급)
+**Issue #2 수정**: 타임존 처리 개선
+- 위치: modules/news_collector.py, filter_by_date()
+- 수정: datetime.now()를 aware datetime으로 변경
+- 예상 시간: 30분
+
+### 우선순위 2 (중요)
+**Issue #5 구현**: 출처 표기 추가
+- 위치: modules/ai_analyzer.py
+- 수정: 요약에 [출처: OOO] 형식 추가
+- 예상 시간: 2시간
+
+### 우선순위 3 (선택)
+**Issue #7 개선**: 리포트 범위 표시
+- 위치: templates/report_template.html
+- 수정: 제목에 "금주 종합" 추가
+- 예상 시간: 1시간
