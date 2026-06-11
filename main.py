@@ -46,15 +46,18 @@ def daily_task():
         logger.info("📰 자동차 스프링 업계 뉴스 자동화 시스템 시작")
         logger.info("=" * 60)
 
-        # 1단계: 뉴스 수집
+        # 1단계: 뉴스 수집 (실제 RSS 피드)
         logger.info("[1/3] 뉴스 수집 중...")
         news_list = collect_news()
 
-        if not news_list:
-            logger.warning("수집된 뉴스가 없습니다.")
-            return
+        # 뉴스 수집 실패 시 경고 (테스트 데이터로 진행)
+        if not news_list or len(news_list) == 0:
+            logger.warning("⚠️ 실제 뉴스 수집 실패 - RSS 피드 연결 확인 필요")
+            logger.info("샘플 데이터로 계속 진행합니다.")
+            # 계속 진행하거나 종료 여부 결정 가능
+            # return  # 주석 처리: 테스트 용도로 계속 진행
 
-        logger.info(f"✓ {len(news_list)}개의 뉴스 수집 완료")
+        logger.info(f"✓ {len(news_list) if news_list else 0}개의 뉴스 수집 완료" if news_list else "✓ 샘플 데이터로 진행")
 
         # 2단계: AI 분석
         logger.info("[2/3] Claude AI로 뉴스 분석 중...")

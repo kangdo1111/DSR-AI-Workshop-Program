@@ -202,6 +202,62 @@
 
 ---
 
+## 💬 Issue #1 - 작업 진행 현황
+
+### 현재 상태 분석
+
+**코드 검토 결과:**
+```
+✅ news_collector.py: RSS 피드 수집 로직 존재 (lines 29-77)
+✅ config.py: 뉴스 소스 설정 정의됨 (Google News, 네이버 등)
+❌ ai_analyzer.py: 테스트 데이터 반환 (실제 분석 로직 비활성화)
+❌ main.py: daily_task() 함수에서 실제 파이프라인 미호출
+```
+
+### 문제 원인
+1. **ai_analyzer.py 라인 29-80**: Claude API 대신 하드코딩된 테스트 데이터 반환
+2. **news_collector.py**: RSS 피드 수집 로직은 있으나 네트워크 테스트 미실시
+3. **main.py daily_task()**: news_collector.py 호출 부분 구현 안 됨
+
+### 해결 전략
+
+**1단계: news_collector.py 검증**
+- RSS 피드 URL 실제 연결 테스트
+- 구글 뉴스, 네이버 뉴스 피드 접근성 확인
+- 예외 처리 강화
+
+**2단계: main.py daily_task() 수정**
+- `news_list = collect_news()` 호출 추가
+- 수집된 뉴스가 없을 경우 테스트 데이터로 폴백
+
+**3단계: ai_analyzer.py 하이브리드 모드**
+- API 키 있으면 Claude로 분석
+- 없으면 로컬 분석 계속 사용
+- 테스트 데이터 제거
+
+**4단계: 통합 테스트**
+- 실제 뉴스 수집 성공 여부 확인
+- 링크 유효성 검증
+
+### 작업 코드
+```python
+# main.py 수정 예정
+def daily_task():
+    logger.info("[1/3] 뉴스 수집 중...")
+    news_list = collect_news()  # ← 추가됨
+    
+    if not news_list or len(news_list) == 0:
+        logger.warning("실제 뉴스 수집 실패, 테스트 데이터 사용")
+        news_list = get_sample_news()  # 폴백
+    
+    logger.info(f"✓ {len(news_list)}개 뉴스 수집")
+    ...
+```
+
+**예상 완료**: 2026-06-11 18:00
+
+---
+
 ## 📋 GitHub 이슈 등록 방법
 
 ### 방법 1: 웹에서 수동 등록 (추천)
