@@ -202,6 +202,78 @@
 
 ---
 
+## 💬 이슈별 진행 상황
+
+---
+
+## ✅ Issue #1~4 - 완료
+
+### Issue #1: 실제 RSS 피드 연동 ✅
+**상태**: 완료
+**해결 방법**:
+- news_collector.py 개선 (sources_tried, sources_success 추가)
+- main.py daily_task() 수정
+- Google News RSS 중복 추가 (2개 URL)
+
+### Issue #2: 날짜 필터 추가 ✅
+**상태**: 완료
+**구현 사항**:
+```python
+def filter_by_date(self, news_list, days=7) -> List[Dict]
+```
+- parsedate_to_datetime 사용
+- 최근 7일만 포함
+- collect_from_sources()에 자동 적용
+
+### Issue #3: 중복 제거 ✅
+**상태**: 완료
+**구현 사항**:
+```python
+def remove_duplicates(self, news_list, similarity_threshold=0.8) -> List[Dict]
+def _similarity_score(self, str1, str2) -> float
+```
+- SequenceMatcher로 유사도 계산 (0~1)
+- 제목+요약 유사도 80% 이상 제외
+- 중복 제거 로그 기록
+
+### Issue #4: 스프링 관련성 필터 ✅
+**상태**: 완료
+**구현 사항**:
+```python
+def filter_by_relevance(self, news_list) -> List[Dict]
+```
+- 스프링 키워드 필터: "스프링", "spring", "suspension", "서스펜션"
+- 제외 키워드: "IT기술", "비트코인", "소프트웨어"
+- 자동차+부품 조합도 인정
+
+---
+
+## ⏳ Issue #5~8 - 진행 예정
+
+### Issue #5: 통계 출처 검증 (예정)
+**계획**:
+- ai_analyzer.py에서 Claude 응답에 `[출처: OOO]` 형식 추가
+- 수치 없는 표현에 `(미상)` 추가
+- 출처 없는 수치에 ⚠️ 표시
+
+### Issue #6: 뉴스 링크 유효성 (예정)
+**계획**:
+- news_collector.py에서 URL 검증 함수 추가
+- 404/연결 실패 URL 제외
+- 링크 없는 기사 제외 (현재는 제목+시간으로 중복 확인)
+
+### Issue #7: 리포트 범위 명시 (예정)
+**계획**:
+- report_template.html 헤더 수정
+- "자동차 스프링 업계 뉴스 리포트 - 금주 종합 (2026.06.07~06.13)" 형식
+- 주간/월간 구분 옵션 추가
+
+### Issue #8: 이슈 우선순위 재평가 (예정)
+**계획**:
+- ai_analyzer.py에서 뉴스 빈도 기반 이슈 추출
+- 같은 테마 기사 3개 이상만 이슈로 인정
+- 영향도 평가 기준 명문화
+
 ## 💬 Issue #1 - 작업 진행 현황
 
 ### 현재 상태 분석
@@ -255,6 +327,13 @@ def daily_task():
 ```
 
 **예상 완료**: 2026-06-11 18:00
+
+### ✅ 완료 항목
+- ✅ RSS 피드 수집 로직 재확인 및 개선
+- ✅ 에러 처리 강화 (sources_tried/sources_success 추가)
+- ✅ main.py daily_task() 수정 (실제 뉴스 수집 호출)
+
+**커밋**: `039dd39` - Issue #1~4 해결: RSS 피드 연동, 날짜 필터, 중복 제거, 스프링 관련성 필터 구현
 
 ---
 
