@@ -61,11 +61,18 @@ class NewsAnalyzer:
                 # 품목 분류 (제목과 요약 기반)
                 category = self._categorize_product(news.get("title", "") + " " + news.get("summary", ""))
 
+                # 명확한 기준으로 영향도 평가
+                impact = self._evaluate_impact(
+                    news.get("title", ""),
+                    news.get("summary", ""),
+                    category
+                )
+
                 summaries.append({
                     "rank": idx,
                     "title": news.get("title", "제목 없음"),
                     "summary": summary_with_source,
-                    "impact": ["높음", "중간", "낮음"][hash(news.get("title", "")) % 3],
+                    "impact": impact,
                     "source": news.get("source", "출처 불명"),
                     "published": news.get("published", "시간 불명"),
                     "link": news.get("link", ""),
@@ -196,6 +203,41 @@ class NewsAnalyzer:
             "기타 스프링 제품": "다각화 기회 검토"
         }
         return opportunities.get(category, "시장 진출 검토")
+
+    def _evaluate_impact(self, title: str, summary: str, category: str) -> str:
+        """명확한 기준으로 영향도 평가
+
+        평가 기준:
+        - 높음: 규제 변화, 기술 혁신, 공급망 영향, 대형 자동차사
+        - 중간: 산업 동향, 투자/기술 뉴스, 중소기업
+        - 낮음: 개별 기업, 제품 출시, 경미한 소식
+        """
+        combined_text = (title + " " + summary).lower()
+
+        # 높음: 규제, 기술혁신, 공급망
+        high_keywords = [
+            "규제", "법규", "기준", "표준",
+            "혁신", "신기술", "특허", "개발",
+            "공급망", "수급", "부족", "가격",
+            "현대", "삼성", "LG", "폭스바겐", "테슬라"
+        ]
+
+        # 낮음: 개별, 경미
+        low_keywords = [
+            "캠페인", "이벤트", "드라마", "광고",
+            "개별 기업", "소수", "소규모"
+        ]
+
+        # 높음 기준 확인
+        if any(kw in combined_text for kw in high_keywords):
+            return "높음"
+
+        # 낮음 기준 확인
+        if any(kw in combined_text for kw in low_keywords):
+            return "낮음"
+
+        # 기본값: 중간
+        return "중간"
 
     def _prepare_news_text(self, news_list: List[Dict]) -> str:
         """

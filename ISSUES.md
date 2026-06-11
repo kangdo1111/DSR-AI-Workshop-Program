@@ -538,6 +538,12 @@ relevant_news = self.filter_by_relevance(dedup_news)
 - 개선안: 뉴스 빈도 기반 평가 추가
 - 영향도: 중간
 
+**[Issue-Runner 현황 댓글]**
+- 분석: 현재 impact는 hash 기반 랜덤 배치
+- 원인: 실제 뉴스 빈도 기반 평가 미구현
+- 전략: ai_analyzer.py에 명확한 평가 기준 정의 및 적용
+- 상태: 🔧 수정 중
+
 ---
 
 ## 🔧 필요한 코드 개선사항
