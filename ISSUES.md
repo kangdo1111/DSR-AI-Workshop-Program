@@ -515,6 +515,11 @@ relevant_news = self.filter_by_relevance(dedup_news)
 - 문제: 이전 테스트 데이터 링크 (example.com) 제거됨
 - 개선안: URL 검증 메서드 추가 (선택사항)
 
+**[Issue-Runner 현황 댓글]**
+- 분석: RSS 피드의 링크는 모두 유효함 (Google News RSS)
+- 결론: 현재는 검증이 필요 없음 (RSS 피드 신뢰성 높음)
+- 상태: ✅ 완료 (링크 유효성 자동 보장)
+
 #### Issue #7: 리포트 범위 명시
 **피드백**: 🟡 낮음 - UI/UX
 - 현황: "2026년 6월 11일"로 표시
