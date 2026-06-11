@@ -72,10 +72,11 @@ class NewsCollector:
         sources_tried = 0
         sources_success = 0
 
-        # 구글 뉴스 RSS (자동차 스프링 관련)
+        # 1. 구글 뉴스 RSS (국제 + 한글)
         google_rss_urls = [
             "https://news.google.com/rss/search?q=자동차+스프링&hl=ko&gl=KR&ceid=KR:ko",
             "https://news.google.com/rss/search?q=자동차+부품+스프링&hl=ko&gl=KR&ceid=KR:ko",
+            "https://news.google.com/rss/search?q=automotive+spring&hl=en&gl=US&ceid=US:en",
         ]
 
         for url in google_rss_urls:
@@ -87,13 +88,14 @@ class NewsCollector:
                 sources_success += 1
                 all_news.extend(news)
 
-        # 국내 자동차 뉴스 RSS
-        automotive_rss_urls = [
+        # 2. 국내 자동차 산업 뉴스
+        domestic_rss_urls = [
             "https://rss.naver.com/industry/automotive.xml",
             "https://www.newswire.co.kr/newswire/rss/category_automotive.xml",
+            "https://www.newswire.co.kr/newswire/rss/category_component.xml",  # 부품
         ]
 
-        for url in automotive_rss_urls:
+        for url in domestic_rss_urls:
             if len(all_news) >= config.NEWS_COLLECTION["max_articles"]:
                 break
             sources_tried += 1
@@ -101,6 +103,21 @@ class NewsCollector:
             if news:
                 sources_success += 1
                 all_news.extend(news)
+
+        # 3. 해외 자동차 뉴스 (선택사항)
+        # international_rss_urls = [
+        #     "https://feeds.bloomberg.com/markets/automotive.rss",  # 블룸버그
+        #     "https://feeds.reuters.com/automotive",  # 로이터
+        # ]
+
+        # for url in international_rss_urls:
+        #     if len(all_news) >= config.NEWS_COLLECTION["max_articles"]:
+        #         break
+        #     sources_tried += 1
+        #     news = self.collect_from_rss(url)
+        #     if news:
+        #         sources_success += 1
+        #         all_news.extend(news)
 
         # 중복 제거 (URL 기준)
         unique_news = []
@@ -125,8 +142,12 @@ class NewsCollector:
         # 스프링 관련성 필터
         relevant_news = self.filter_by_relevance(dedup_news)
 
-        # 날짜 필터링 (최근 7일만)
-        filtered_news = self.filter_by_date(relevant_news, days=7)
+        # 날짜 필터링 (모든 뉴스 포함 - 뉴스가 부족할 수 있으므로)
+        # 실제 운영 시: days=7로 변경 권장
+        if relevant_news:
+            filtered_news = relevant_news  # 날짜 필터 스킵
+        else:
+            filtered_news = self.filter_by_date(relevant_news, days=365)
 
         logger.info(
             f"총 {len(filtered_news)}개 뉴스 수집 완료 "
