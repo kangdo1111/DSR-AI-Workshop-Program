@@ -1,260 +1,264 @@
-# 🚗 자동차 스프링 업계 뉴스 자동화 리포트 시스템
+# 🚗 자동차 스프링 업계 뉴스 자동화 시스템
 
-매일 아침 8시에 자동차 스프링 관련 국내외 뉴스를 자동으로 수집하여 분석하고, 전문적인 HTML 리포트를 생성하는 자동화 시스템입니다.
+매일 아침 8시에 자동으로 자동차 스프링 관련 뉴스를 수집하여 분석하고 전문가 수준의 HTML 리포트를 생성합니다.
 
-## 📋 기능
+---
 
-- ✅ **자동 뉴스 수집**: 매일 아침 8시 자동 실행
-- ✅ **AI 분석**: Claude API를 사용한 전문적 요약
-- ✅ **자동 이슈 추출**: 주요 이슈 5개 자동 식별
-- ✅ **HTML 리포트**: 깔끔한 전문가 수준의 리포트
-- ✅ **한글 완전 지원**: 모든 콘텐츠가 한글로 표시
-- ✅ **원문 링크 포함**: 각 뉴스의 원문으로 바로 이동 가능
+## ✨ 주요 기능
 
-## 🚀 빠른 시작
+- 📰 **자동 뉴스 수집**: 매일 아침 8시에 RSS 피드에서 최신 뉴스 10개 자동 수집
+- 🤖 **AI 전문 분석**: Claude를 활용한 한글 요약 및 영향도 평가
+- ⚠️ **주요 이슈 추출**: 자동으로 5개의 주요 이슈 식별
+- 🎨 **전문 리포트**: 깔끔한 HTML 형식의 일일 리포트 생성
+- 🔄 **자동 필터링**: 날짜, 중복, 관련성을 자동으로 검증
 
-### 1단계: Python 설치
+---
 
-**Windows에서 Python 설치 방법:**
+## 🚀 빠른 시작 (5분)
 
-1. https://www.python.org/downloads/ 방문
-2. "Download Python 3.12" (또는 최신 버전) 클릭
-3. 설치 파일 실행
-4. **중요**: "Add Python to PATH" 체크 ✓
-5. "Install Now" 클릭
-
-**설치 확인:**
+### 1단계: 설치
 ```bash
-python --version
-```
+# 저장소 클론
+git clone https://github.com/kangdo1111/DSR-AI-Workshop-Program.git
+cd DSR-AI-Workshop-Program/spring_news_automation
 
-### 2단계: 가상환경 생성
-
-프로젝트 폴더에서 다음 명령어를 실행하세요:
-
-```bash
-# Windows PowerShell
+# Python 환경 설정
 python -m venv venv
-venv\Scripts\activate
+venv\Scripts\activate  # Windows
 
-# 또는 Command Prompt
-python -m venv venv
-venv\Scripts\activate.bat
-```
-
-**가상환경 활성화 확인:**
-- 터미널 왼쪽에 `(venv)`가 표시되면 정상입니다.
-
-### 3단계: 의존성 설치
-
-```bash
+# 라이브러리 설치
 pip install -r requirements.txt
 ```
 
-**설치 완료 시:**
-```
-Successfully installed APScheduler anthropic beautifulsoup4 ...
-```
-
-### 4단계: API 키 설정
-
-1. https://console.anthropic.com 방문
-2. 로그인 또는 가입
-3. "API Keys" 메뉴에서 "Create Key" 클릭
-4. API 키 복사
-
-`.env` 파일을 열고 다음과 같이 수정:
-
-```env
-ANTHROPIC_API_KEY=sk-ant-v0-xxxxxxxxxxxxxxxxxxxx
+### 2단계: API 키 설정
+```bash
+# .env 파일 수정
+ANTHROPIC_API_KEY=sk-ant-YOUR_KEY_HERE
 ```
 
-**⚠️ 중요**: API 키는 절대 공개하지 마세요!
+**API 키 발급**: https://console.anthropic.com
 
-### 5단계: 프로그램 실행
-
+### 3단계: 실행
 ```bash
 python main.py
 ```
 
-**정상 실행 시 표시:**
-```
-============================================================
-✅ 시스템이 준비되었습니다!
-============================================================
-📅 실행 시간: 매일 08:00
-📁 리포트 저장 경로: C:\Users\...\spring_news_automation\output\reports
-```
-
-## 📁 생성되는 리포트 위치
-
-```
-spring_news_automation/
-└── output/
-    └── reports/
-        └── 2026-06-11/
-            └── report.html    ← 이 파일을 브라우저에서 열어 보세요!
-```
-
-**리포트 보기:**
-1. 생성된 `report.html` 파일 찾기
-2. 파일을 마우스 우클릭
-3. "다른 프로그램으로 열기" → "Chrome" 또는 "Edge"
-4. 또는 `report.html`을 직접 더블클릭
-
-## 💡 사용 예시
-
-### 아침에 자동 실행되는 방식
-
-매일 아침 8시가 되면 다음이 자동으로 실행됩니다:
-
-```
-08:00:00 - [1/3] 뉴스 수집 중...
-08:00:15 - ✓ 10개의 뉴스 수집 완료
-08:00:16 - [2/3] Claude AI로 뉴스 분석 중...
-08:00:35 - ✓ 분석 완료: 10개 요약, 5개 이슈, 12개 키워드
-08:00:36 - [3/3] HTML 리포트 생성 중...
-08:00:37 - ✓ 리포트 생성 완료: output/reports/2026-06-11/report.html
-08:00:37 - ✅ 모든 작업이 정상적으로 완료되었습니다.
-```
-
-### PC 절전 모드 관련 주의사항
-
-⚠️ **자동 실행을 위해 PC 절전 모드를 비활성화해야 합니다:**
-
-1. Windows 설정 열기
-2. "전원 및 절전" → "전원 계획"
-3. "고성능" 선택 또는 절전 시간 길게 설정
-
-## 🔧 트러블슈팅
-
-### 문제: "command not found: python"
-**해결:** Python을 다시 설치하고 PATH에 추가했는지 확인하세요.
-
-### 문제: "No module named 'anthropic'"
-**해결:** `pip install -r requirements.txt`를 다시 실행하세요.
-
-### 문제: "ANTHROPIC_API_KEY not found"
-**해결:** `.env` 파일에서 API 키가 올바르게 설정되었는지 확인하세요.
-
-### 문제: 프로그램이 8시에 실행되지 않음
-**해결:** 
-1. 컴퓨터 시간이 정확한지 확인
-2. PC 절전 모드 비활성화
-3. 방화벽이 차단하지 않는지 확인
-
-## 📊 리포트 구성
-
-생성되는 HTML 리포트는 다음과 같이 구성됩니다:
-
-```
-┌─────────────────────────────────────────┐
-│  자동차 스프링 업계 뉴스 리포트           │
-│  2026년 6월 11일 (목요일)               │
-├─────────────────────────────────────────┤
-│ ⚠️  오늘의 주요 이슈 (상위 5개)          │
-│     • 이슈 1: ...                       │
-│     • 이슈 2: ...                       │
-│     ...                                 │
-├─────────────────────────────────────────┤
-│ 📰 상세 뉴스 분석 (10개)                │
-│   [1] 뉴스 제목 1                       │
-│       출처 | 시간                       │
-│       [한글 요약]                       │
-│       영향도: 높음                      │
-│       [원문 보기]                       │
-│                                         │
-│   [2] 뉴스 제목 2                       │
-│       ...                               │
-├─────────────────────────────────────────┤
-│ 🏷️  주요 키워드                         │
-│     #전동차 #스프링 #경량화 ...        │
-└─────────────────────────────────────────┘
-```
-
-## 🎯 고급 설정
-
-### 실행 시간 변경
-
-`config.py`의 다음 부분을 수정:
-
-```python
-SCHEDULER = {
-    "hour": 8,      # 시간 (0-23)
-    "minute": 0,    # 분 (0-59)
-    "timezone": "Asia/Seoul",
-}
-```
-
-예: 오후 2시에 실행하려면 `"hour": 14`
-
-### 수집 뉴스 개수 변경
-
-`config.py`의 다음 부분을 수정:
-
-```python
-NEWS_COLLECTION = {
-    "max_articles": 10,  # 10 → 15로 변경하면 15개 수집
-}
-```
-
-## 📝 로그 확인
-
-프로그램의 실행 기록은 다음 위치에 저장됩니다:
-
-```
-spring_news_automation/
-└── logs/
-    ├── spring_news_automation_latest.log
-    └── ...
-```
-
-## ⚙️ 시스템 요구사항
-
-- **OS**: Windows 10 이상
-- **Python**: 3.9 이상
-- **인터넷**: 필수 (뉴스 수집용)
-- **API 키**: Anthropic API 키 필수
-
-## 🆘 도움말
-
-### 가상환경이란?
-파이썬 프로젝트마다 독립적인 환경을 만드는 것입니다. 다른 프로젝트와 라이브러리 버전이 충돌하지 않도록 합니다.
-
-### API 키는 어디서 얻나요?
-1. https://console.anthropic.com 방문
-2. "API Keys" 탭에서 "Create Key" 클릭
-3. 발급받은 키를 `.env` 파일에 입력
-
-### 매일 실행되나요?
-네! `APScheduler`가 매일 설정된 시간에 자동으로 실행합니다. PC가 켜져있어야 합니다.
-
-### 리포트를 이메일로 받을 수 있나요?
-현재는 로컬 폴더에 저장됩니다. 향후 이메일 발송 기능을 추가할 수 있습니다.
-
-## 📞 문제 해결
-
-**프로그램이 자꾸 종료된다면:**
-```bash
-# 로그를 확인해보세요
-cat logs/spring_news_automation_latest.log
-```
-
-**API 키 오류가 발생한다면:**
-1. `.env` 파일이 프로젝트 폴더에 있는지 확인
-2. API 키가 정확하게 복사되었는지 확인
-3. API 키에 공백이 없는지 확인
-
-## 📚 더 알아보기
-
-- [Anthropic Claude API 문서](https://docs.anthropic.com)
-- [APScheduler 문서](https://apscheduler.readthedocs.io)
-- [BeautifulSoup 문서](https://www.crummy.com/software/BeautifulSoup)
+**리포트 확인**: `output/reports/YYYY-MM-DD/report.html`
 
 ---
 
-**버전**: 1.0.0  
-**마지막 업데이트**: 2026-06-11  
-**개발자**: Claude Code AI Assistant
+## 📋 리포트 구성
 
-행운을 빕니다! 🎉
+생성되는 HTML 리포트에는 다음이 포함됩니다:
+
+```
+┌─────────────────────────────────┐
+│ 자동차 스프링 업계 뉴스 리포트   │
+│ 2026년 6월 11일 (목요일)        │
+├─────────────────────────────────┤
+│ ⚠️ 오늘의 주요 이슈 (5개)       │
+│   1. 전동화 전환 추진           │
+│   2. 경량화 기술 강화           │
+│   3. 공급망 안정화             │
+│   ...                          │
+├─────────────────────────────────┤
+│ 📰 상세 뉴스 분석 (10개)        │
+│   [1] 제목                      │
+│        출처 | 시간              │
+│        한글 요약...             │
+│        영향도: 높음             │
+│        [원문 보기]              │
+│   [2] ...                       │
+├─────────────────────────────────┤
+│ 🏷️ 주요 키워드                  │
+│   #전동차 #스프링 #경량화 ...   │
+└─────────────────────────────────┘
+```
+
+---
+
+## 🔧 설정 (config.py)
+
+### 실행 시간 변경
+```python
+SCHEDULER = {
+    "hour": 8,      # 8시 → 14로 바꾸면 오후 2시
+    "minute": 0,
+}
+```
+
+### 뉴스 개수 변경
+```python
+NEWS_COLLECTION = {
+    "max_articles": 10,  # 10 → 15로 바꾸면 15개 수집
+}
+```
+
+### API 모델 변경
+```python
+AI_ANALYSIS = {
+    "model": "claude-3-5-sonnet-20241022",  # Claude 모델
+    "max_tokens": 2000,
+}
+```
+
+---
+
+## 📁 파일 구조
+
+```
+spring_news_automation/
+├── main.py                    # 메인 실행 파일
+├── config.py                  # 설정
+├── requirements.txt           # Python 의존성
+├── .env                       # API 키 (절대 공개 금지!)
+│
+├── modules/
+│   ├── news_collector.py      # RSS 뉴스 수집
+│   ├── ai_analyzer.py         # Claude AI 분석
+│   ├── report_generator.py    # HTML 리포트 생성
+│   └── scheduler.py           # 자동 스케줄링
+│
+├── templates/
+│   └── report_template.html   # 리포트 템플릿
+│
+├── output/reports/            # 생성된 리포트 저장
+│   └── 2026-06-11/
+│       └── report.html
+│
+├── logs/                      # 실행 로그
+├── data/                      # 캐시 데이터
+│
+├── ISSUES.md                  # 이슈 추적
+├── CLAUDE.md                  # 기술 문서
+├── SOUL.md                    # 프로젝트 목표
+└── README.md                  # 이 파일
+```
+
+---
+
+## 🎯 사용 방법
+
+### 자동 실행 (권장)
+```bash
+python main.py
+# 매일 아침 8시에 자동 실행
+# Ctrl+C로 중지 가능
+```
+
+### 수동 실행 (테스트)
+```bash
+python -c "from main import daily_task; daily_task()"
+# 즉시 리포트 생성
+```
+
+### 스킬로 사용 (자동화)
+```
+/issue-writer    → 산출물 검증, 이슈 생성
+/issue-runner    → 이슈 분석, 코드 수정, 커밋
+```
+
+---
+
+## 📊 예상 동작
+
+### 매일 아침 8시 자동 실행
+```
+08:00 시작
+  ├─ 뉴스 수집 (5초)
+  │  └─ 시도: 4개 소스, 성공: 3개
+  ├─ AI 분석 (20초)
+  │  └─ 10개 요약, 5개 이슈, 12개 키워드
+  ├─ HTML 생성 (1초)
+  │  └─ output/reports/2026-06-11/report.html
+  └─ 완료 ✅
+
+총 소요: 약 30초
+```
+
+---
+
+## ⚠️ 주의사항
+
+### PC 설정
+- **절전 모드 비활성화** (8시 자동 실행을 위해)
+- **프로그램 24시간 실행** (main.py 계속 실행)
+- **인터넷 연결 필수** (뉴스 피드 수집)
+
+### 보안
+- **.env 파일은 절대 공개 금지** (API 키 포함)
+- **GitHub에 API 키 커밋 금지**
+- **개인 컴퓨터에서만 실행** (크레덴셜 노출 위험)
+
+### 문제 해결
+
+| 증상 | 원인 | 해결 |
+|------|------|------|
+| "뉴스 수집 실패" | RSS 피드 연결 문제 | 인터넷 연결 확인 |
+| "API 키 오류" | .env 파일 설정 오류 | `.env` 파일의 API 키 확인 |
+| "8시에 실행 안 됨" | PC 절전 모드 | Windows 절전 설정 비활성화 |
+| "모듈 오류" | 라이브러리 미설치 | `pip install -r requirements.txt` 재실행 |
+
+---
+
+## 🔍 리포트 확인 위치
+
+### 파일 위치
+```
+C:\Users\[username]\Desktop\workspace\spring_news_automation\output\reports\
+```
+
+### 날짜별 폴더
+```
+output/reports/
+├── 2026-06-11/
+│   └── report.html    ← 클릭해서 브라우저에서 열기
+├── 2026-06-10/
+│   └── report.html
+└── ...
+```
+
+### 브라우저에서 열기
+1. 폴더에서 `report.html` 찾기
+2. 더블클릭 또는 우클릭 → "다른 프로그램으로 열기" → Chrome/Edge
+3. 자동으로 브라우저에서 열림
+
+---
+
+## 🛠️ 기술 스택
+
+- **언어**: Python 3.9+
+- **뉴스 수집**: feedparser, BeautifulSoup4, requests
+- **AI**: Anthropic Claude API (claude-3-5-sonnet)
+- **리포트**: Jinja2 (HTML 템플릿)
+- **자동화**: APScheduler (일정 관리)
+- **형상**: Git + GitHub
+
+---
+
+## 📞 더 알아보기
+
+- **기술 문서**: [CLAUDE.md](CLAUDE.md)
+- **프로젝트 목표**: [SOUL.md](SOUL.md)
+- **이슈 추적**: [ISSUES.md](ISSUES.md)
+- **GitHub**: https://github.com/kangdo1111/DSR-AI-Workshop-Program
+
+---
+
+## 📈 프로젝트 상태
+
+| 항목 | 상태 |
+|------|------|
+| 뉴스 수집 | ✅ 완성 |
+| AI 분석 | ✅ 완성 |
+| HTML 리포트 | ✅ 완성 |
+| 자동 스케줄링 | ✅ 완성 |
+| 스킬 자동화 | ✅ 완성 |
+| 문서화 | ✅ 완성 |
+| **전체** | **✅ v1.0 완성** |
+
+---
+
+**시작**: 2026-06-11  
+**버전**: 1.0.0 ✅  
+**상태**: 프로덕션 준비 완료
