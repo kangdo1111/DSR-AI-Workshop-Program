@@ -44,20 +44,31 @@ class NewsAnalyzer:
         try:
             logger.info("뉴스 분석 중 (로컬 처리)...")
 
+            # 최대 5개 뉴스만 분석 (토큰 절약)
+            analyzed_news = news_list[:5]
+
             # 로컬 분석 (간단한 텍스트 처리)
             summaries = []
-            for news in news_list:
-                summary_text = news.get("summary", "")[:200]
+            for idx, news in enumerate(analyzed_news, 1):
+                summary_text = news.get("summary", "")[:150]
                 if not summary_text:
                     summary_text = news.get("title", "")
 
+                # 품목 분류 (제목과 요약 기반)
+                category = self._categorize_product(news.get("title", "") + " " + news.get("summary", ""))
+
                 summaries.append({
+                    "rank": idx,
                     "title": news.get("title", "제목 없음"),
-                    "summary": f"{summary_text}... (자동 요약됨)",
+                    "summary": summary_text,
                     "impact": ["높음", "중간", "낮음"][hash(news.get("title", "")) % 3],
                     "source": news.get("source", "출처 불명"),
                     "published": news.get("published", "시간 불명"),
-                    "link": news.get("link", "")
+                    "link": news.get("link", ""),
+                    "category": category,
+                    "dsr_response": self._get_dsr_response(category),
+                    "competitors": self._get_competitors_info(category),
+                    "opportunity": self._get_opportunity(category)
                 })
 
             # 주요 이슈 추출 (상위 5개)
@@ -115,6 +126,72 @@ class NewsAnalyzer:
                 "keywords": [],
                 "error": str(e),
             }
+
+    def _categorize_product(self, text: str) -> str:
+        """뉴스 내용을 기반으로 제품 카테고리 분류"""
+        text_lower = text.lower()
+
+        if "코일" in text_lower or "coil" in text_lower:
+            return "코일 스프링"
+        elif "리프" in text_lower or "leaf" in text_lower:
+            return "리프 스프링"
+        elif "토션" in text_lower or "torsion" in text_lower:
+            return "토션 바"
+        elif "스태빌" in text_lower or "stabilizer" in text_lower:
+            return "스태빌라이저"
+        elif "경량화" in text_lower or "경량" in text_lower:
+            return "경량 소재"
+        elif "친환경" in text_lower or "환경" in text_lower:
+            return "친환경 소재"
+        else:
+            return "기타 스프링 제품"
+
+    def _get_dsr_response(self, category: str) -> str:
+        """DSR제강의 대응 방안"""
+        responses = {
+            "코일 스프링": "코일 스프링 고강도 기술 강화 필요",
+            "리프 스프링": "상용차 리프 스프링 시장 확대",
+            "토션 바": "토션 바 경량화 기술 개발",
+            "스태빌라이저": "스태빌라이저 수요 증가에 대응",
+            "경량 소재": "고강도 저밀도 소재 개발 투자",
+            "친환경 소재": "친환경 재료 인증 및 대응 필요",
+            "기타 스프링 제품": "신제품 개발 검토"
+        }
+        return responses.get(category, "시장 동향 모니터링")
+
+    def _get_competitors_info(self, category: str) -> Dict:
+        """경쟁사 정보"""
+        competitors = {
+            "코일 스프링": {
+                "한국": ["NHK스프링", "태태스프링"],
+                "일본": ["NHK Spring Co.", "Aishin"],
+                "유럽": ["Lesjöfors", "Mitsubishi Steel"]
+            },
+            "리프 스프링": {
+                "한국": ["만도", "현대제강"],
+                "일본": ["NHK Spring", "Sumitomo"],
+                "유럽": ["Hendrickson", "SAF-HOLLAND"]
+            },
+            "경량 소재": {
+                "한국": ["포스코", "동국제강"],
+                "일본": ["JFE Steel", "NIPPON Steel"],
+                "유럽": ["ArcelorMittal", "Voest"]
+            }
+        }
+        return competitors.get(category, {"한국": [], "일본": [], "유럽": []})
+
+    def _get_opportunity(self, category: str) -> str:
+        """기회/위협 분석"""
+        opportunities = {
+            "코일 스프링": "전동차 수요 증가로 신규 스프링 설계 기회",
+            "리프 스프링": "상용차 전동화로 신소재 적용 기회",
+            "토션 바": "경량화 트렌드로 고강도 제품 수요 증가",
+            "스태빌라이저": "모듈화 추세로 통합형 제품 개발 기회",
+            "경량 소재": "전동화로 무게 절감 필수화",
+            "친환경 소재": "탄소중립 규제 강화로 수요 급증",
+            "기타 스프링 제품": "다각화 기회 검토"
+        }
+        return opportunities.get(category, "시장 진출 검토")
 
     def _prepare_news_text(self, news_list: List[Dict]) -> str:
         """
