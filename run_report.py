@@ -34,13 +34,6 @@ def main():
         logger.info("📰 자동차 스프링 업계 뉴스 자동화 시스템")
         logger.info("=" * 70)
 
-        # API 키 확인
-        api_key = os.getenv("ANTHROPIC_API_KEY")
-        if not api_key or api_key == "your_api_key_here":
-            logger.error("❌ Anthropic API 키가 설정되지 않았습니다.")
-            logger.error(".env 파일의 ANTHROPIC_API_KEY를 설정해주세요.")
-            return
-
         # 1단계: 뉴스 수집
         logger.info("\n[1/3] 📰 뉴스 수집 중...")
         news_list = collect_news()
@@ -81,8 +74,17 @@ def main():
 
     except Exception as e:
         logger.error(f"❌ 오류 발생: {str(e)}", exc_info=True)
+        print("\n" + "=" * 70)
+        print("프로그램이 오류로 중단되었습니다.")
+        print("=" * 70)
+        input("\n아무 키나 누르세요...")
         sys.exit(1)
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        print(f"\n예상치 못한 오류: {str(e)}")
+        import traceback
+        traceback.print_exc()

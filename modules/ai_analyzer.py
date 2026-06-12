@@ -1,12 +1,11 @@
 """
-AI 분석 모듈 - Claude API를 사용하여 뉴스를 분석하고 요약합니다.
+AI 분석 모듈 - 로컬 처리 방식으로 뉴스를 분석하고 요약합니다.
 """
 import logging
 from typing import List, Dict
 import json
 import sys
 import os
-from anthropic import Anthropic
 
 # config.py 경로 추가
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -16,11 +15,10 @@ logger = logging.getLogger(__name__)
 
 
 class NewsAnalyzer:
-    """Claude API를 사용한 뉴스 분석 클래스"""
+    """로컬 처리 방식의 뉴스 분석 클래스"""
 
     def __init__(self):
-        self.client = Anthropic()
-        self.model = config.AI_ANALYSIS["model"]
+        pass
 
     def analyze_news(self, news_list: List[Dict]) -> Dict:
         """
