@@ -57,54 +57,49 @@ spring_news_automation/
 
 ---
 
-## 🎯 하네스 아키텍처 (Managed Agents)
+## 📊 시스템 아키텍처
 
-### 팀 구조
+### 구조
 ```
-📋 News Coordinator (조정자)
-    ├──🔍 Collector Agent (RSS 수집)
-    ├── 🤖 Analyzer Agent (AI 분석)
-    ├── ✅ Validator Agent (품질 검증)
-    └── 📊 Reporter Agent (리포트 생성)
+run_report.py (단일 실행 파일)
+    ↓
+1️⃣ news_collector.py  (RSS 수집)
+    ↓
+2️⃣ ai_analyzer.py     (로컬 분석 - API 없음)
+    ↓
+3️⃣ report_generator.py (HTML 생성)
+    ↓
+output/reports/YYYY-MM-DD/report.html
 ```
 
-### 에이전트 역할
-| 에이전트 | 모델 | 책임 | 스킬 |
-|---------|------|------|------|
-| **Coordinator** | Opus 4.8 | 전체 흐름 제어, 결과 수집 | `issue-writer`, `issue-runner` |
-| **Collector** | Sonnet 4.6 | RSS 수집, 필터링, 중복 제거 | `collect-news` |
-| **Analyzer** | Opus 4.8 | 전문가 분석, 이슈 추출 | `analyze-ai` |
-| **Validator** | Sonnet 4.6 | 품질 검증, 신뢰도 평가 | `validate-news` |
-| **Reporter** | Sonnet 4.6 | HTML 생성, GitHub 이슈 연동 | `generate-report` |
+### 핵심 특징
+| 항목 | 내용 |
+|------|------|
+| **API** | 없음 (완전 무료) |
+| **분석 방식** | 로컬 처리 (로컬 키워드 분석) |
+| **뉴스 출처** | RSS 피드 (Google News, 네이버, 뉴스와이어) |
+| **결과** | HTML 리포트 |
+| **비용** | 0원 |
+| **속도** | 10~20초 |
 
 ### 데이터 흐름
 ```
-1️⃣ Collect → 2️⃣ Analyze → 3️⃣ Validate → 4️⃣ Report
-    ↓              ↓            ↓            ↓
-  RSS 피드    Claude AI    품질 검사    HTML + GitHub
-  
-공유 워크스페이스: /workspace/data
-- collected_news.json
-- analyzed_news.json
-- validated_news.json
-- report_YYYYMMDD.html
+RSS 피드 수집
+    ↓
+필터링 (7일, 중복제거, 관련성)
+    ↓
+로컬 분석 (제품분류, 영향도평가)
+    ↓
+HTML 리포트 생성
+    ↓
+output/reports/YYYY-MM-DD/report.html
 ```
 
-### 스킬 구성
-| 스킬 | 담당 에이전트 | 기능 |
-|------|------------|------|
-| `collect-news` | Collector | RSS 수집 + 필터링 |
-| `analyze-ai` | Analyzer | Claude API 호출 + 분석 |
-| `validate-news` | Validator | 품질/신뢰도 검증 |
-| `generate-report` | Reporter | HTML 리포트 생성 |
-| `issue-writer` | Coordinator | GitHub 이슈 자동 생성 |
-| `issue-runner` | Coordinator | 이슈 기반 자동 수정 |
-
-### 활성화 방식
-- **독립 스레드**: 각 에이전트가 자신의 스레드에서 실행
-- **공유 워크스페이스**: `/workspace/data`를 통한 데이터 연동
-- **순차 실행**: Coordinator가 순차적으로 에이전트 호출
-- **비동기 처리**: 향후 병렬 처리 지원 예정
+### 분석 로직 (로컬)
+- **제품 분류**: 제목/요약 키워드로 자동 분류
+- **영향도 평가**: 규제/기술/공급망 등 키워드 기반
+- **경쟁사 정보**: 사전 정의된 경쟁사 목록 (한/일/유럽)
+- **사업 기회**: 카테고리별 기회/위협 분석
 
 ## 주요 결정사항
 
