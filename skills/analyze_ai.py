@@ -6,12 +6,8 @@ Analyzer Agent가 사용하는 메인 스킬입니다.
 """
 
 import json
-import os
 from pathlib import Path
 from datetime import datetime
-from anthropic import Anthropic
-
-client = Anthropic()
 
 
 class NewsAnalyzer:

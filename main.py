@@ -189,16 +189,6 @@ def daily_task():
 def main():
     """메인 함수 - 스케줄러를 시작합니다."""
     logger.info("🚀 자동차 스프링 업계 뉴스 자동화 시스템 초기화 중...")
-
-    # API 키 확인
-    api_key = os.getenv("ANTHROPIC_API_KEY")
-    if not api_key or api_key == "your_api_key_here":
-        logger.error("❌ Anthropic API 키가 설정되지 않았습니다.")
-        logger.error(".env 파일의 ANTHROPIC_API_KEY를 설정해주세요.")
-        logger.error("https://console.anthropic.com 에서 API 키를 발급받으세요.")
-        sys.exit(1)
-
-    logger.info("✓ API 키 확인 완료")
     logger.info(f"✓ 저장 경로: {config.PATHS['output']}")
     logger.info(f"✓ 로그 경로: {config.PATHS['logs']}")
 
