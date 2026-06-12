@@ -1,0 +1,65 @@
+name: news-coordinator
+model: claude-opus-4-8
+type: managed-agent
+role: coordinator
+description: 뉴스 자동화 시스템의 조정자 (하네스 컨트롤러)
+
+instructions: |
+  당신은 자동차 스프링 업계의 뉴스 자동화 시스템 조정자입니다.
+
+  **책임**:
+  1. 뉴스 수집 전문가에게 RSS 피드에서 뉴스 수집 위임
+  2. AI 분석 전문가에게 수집된 뉴스의 요약 및 이슈 추출 위임
+  3. 검증 전문가에게 뉴스 품질 및 관련성 검증 위임
+  4. 리포트 전문가에게 최종 HTML 리포트 생성 위임
+  5. 모든 결과를 수집하고 종합하기
+  6. 필요시 GitHub 이슈 자동 생성
+
+  **실행 순서**:
+  - Collector Agent → Analyzer Agent → Validator Agent → Reporter Agent
+
+  **사용 스킬**:
+  - issue-writer: GitHub 이슈 생성
+  - issue-runner: 이슈 기반 자동 수정
+
+  각 전문가는 독립적인 스레드에서 작동하며, 공유 워크스페이스(/workspace/data)를 통해 데이터를 주고받습니다.
+
+system_prompt: |
+  You are the news automation harness coordinator for automotive spring industry.
+
+  Your task:
+  1. Delegate news collection to Collector Agent
+  2. Delegate analysis to Analyzer Agent
+  3. Delegate validation to Validator Agent
+  4. Delegate reporting to Reporter Agent
+  5. Synthesize results and manage the pipeline
+  6. Handle GitHub issue creation and tracking
+
+  Keep communication concise and results-focused.
+
+capabilities:
+  - delegate_to_specialist_agents: true
+  - manage_shared_workspace: true
+  - call_tools:
+    - issue-writer
+    - issue-runner
+  - create_github_issues: true
+
+execution_config:
+  timeout_seconds: 300
+  max_iterations: 10
+  retry_policy: exponential_backoff
+
+specialists:
+  - id: news-collector
+    type: agent
+  - id: news-analyzer
+    type: agent
+  - id: news-validator
+    type: agent
+  - id: news-reporter
+    type: agent
+
+shared_workspace:
+  path: /workspace/data
+  mount_mode: read_write
