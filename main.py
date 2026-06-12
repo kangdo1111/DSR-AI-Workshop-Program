@@ -35,6 +35,7 @@ from skills.validate_news import NewsValidator
 from skills.generate_report import ReportGenerator
 from skills.issue_writer import IssueWriter
 from skills.issue_runner import IssueRunner
+from skills.rubric_validator import RubricValidator
 
 # 로깅 설정
 logging.basicConfig(
@@ -109,13 +110,20 @@ def harness_coordinator():
             logger.warning(f"⚠️ 리포트 생성 실패: {report_result.get('message')}")
 
         # ===== 5단계: GitHub 이슈 생성 =====
-        logger.info("\n[5/5] GitHub 이슈 생성...")
+        logger.info("\n[5/6] GitHub 이슈 생성...")
         issue_writer = IssueWriter()
         issue_result = issue_writer.run()
         if issue_result.get("status") == "success":
             logger.info(f"✅ GitHub 이슈 생성: {issue_result.get('issues_count')}개")
         else:
             logger.info(f"ℹ️ {issue_result.get('message')}")
+
+        # ===== 6단계: 루브릭 검증 =====
+        logger.info("\n[6/6] 프로젝트 품질 평가 중...")
+        validator = RubricValidator()
+        rubric_result = validator.validate_all()
+        logger.info(f"✅ 최종 점수: {rubric_result['total_score']}/100")
+        logger.info(f"   등급: {rubric_result['grade']}")
 
         # ===== 결과 정리 =====
         logger.info("\n" + "=" * 60)
@@ -126,6 +134,7 @@ def harness_coordinator():
         logger.info(f"   분석: {analyze_result['total_count']}개")
         logger.info(f"   검증: {validate_result['total_count']}개")
         logger.info(f"   이슈: {issue_result.get('issues_count', 0)}개")
+        logger.info(f"   품질: {rubric_result['total_score']}/100 ({rubric_result['grade']})")
 
     except Exception as e:
         logger.error(f"❌ 하네스 조정자 오류: {str(e)}", exc_info=True)
