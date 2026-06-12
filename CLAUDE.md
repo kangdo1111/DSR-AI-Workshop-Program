@@ -57,26 +57,54 @@ spring_news_automation/
 
 ---
 
-## 에이전트 팀 (Managed Agents)
+## 🎯 하네스 아키텍처 (Managed Agents)
 
 ### 팀 구조
 ```
-📋 메인 뉴스 분석기 (조정자)
-├── 🔍 보안 검증 에이전트 (전문가)
-├── ⚡ 성능 분석 에이전트 (전문가)
-└── ✅ 콘텐츠 검증 에이전트 (전문가)
+📋 News Coordinator (조정자)
+    ├──🔍 Collector Agent (RSS 수집)
+    ├── 🤖 Analyzer Agent (AI 분석)
+    ├── ✅ Validator Agent (품질 검증)
+    └── 📊 Reporter Agent (리포트 생성)
 ```
 
-### 팀 역할
-- **메인 뉴스 분석기 (조정자)**: 뉴스 수집 → 분석 흐름 관리, 전문가들에게 작업 위임
-- **보안 검증 에이전트**: RSS 피드 URL 검증, 데이터 무결성 확인
-- **성능 분석 에이전트**: 수집 속도, AI 응답 시간 분석
-- **콘텐츠 검증 에이전트**: 뉴스 관련성, 요약 품질 검증
+### 에이전트 역할
+| 에이전트 | 모델 | 책임 | 스킬 |
+|---------|------|------|------|
+| **Coordinator** | Opus 4.8 | 전체 흐름 제어, 결과 수집 | `issue-writer`, `issue-runner` |
+| **Collector** | Sonnet 4.6 | RSS 수집, 필터링, 중복 제거 | `collect-news` |
+| **Analyzer** | Opus 4.8 | 전문가 분석, 이슈 추출 | `analyze-ai` |
+| **Validator** | Sonnet 4.6 | 품질 검증, 신뢰도 평가 | `validate-news` |
+| **Reporter** | Sonnet 4.6 | HTML 생성, GitHub 이슈 연동 | `generate-report` |
 
-### 활성화
-- 각 에이전트는 독립적 컨텍스트 유지
-- 공유 파일시스템 (`/workspace/data`) 활용
-- 병렬 처리로 전체 분석 시간 단축
+### 데이터 흐름
+```
+1️⃣ Collect → 2️⃣ Analyze → 3️⃣ Validate → 4️⃣ Report
+    ↓              ↓            ↓            ↓
+  RSS 피드    Claude AI    품질 검사    HTML + GitHub
+  
+공유 워크스페이스: /workspace/data
+- collected_news.json
+- analyzed_news.json
+- validated_news.json
+- report_YYYYMMDD.html
+```
+
+### 스킬 구성
+| 스킬 | 담당 에이전트 | 기능 |
+|------|------------|------|
+| `collect-news` | Collector | RSS 수집 + 필터링 |
+| `analyze-ai` | Analyzer | Claude API 호출 + 분석 |
+| `validate-news` | Validator | 품질/신뢰도 검증 |
+| `generate-report` | Reporter | HTML 리포트 생성 |
+| `issue-writer` | Coordinator | GitHub 이슈 자동 생성 |
+| `issue-runner` | Coordinator | 이슈 기반 자동 수정 |
+
+### 활성화 방식
+- **독립 스레드**: 각 에이전트가 자신의 스레드에서 실행
+- **공유 워크스페이스**: `/workspace/data`를 통한 데이터 연동
+- **순차 실행**: Coordinator가 순차적으로 에이전트 호출
+- **비동기 처리**: 향후 병렬 처리 지원 예정
 
 ## 주요 결정사항
 
